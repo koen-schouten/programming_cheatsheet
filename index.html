@@ -1,0 +1,2583 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/docco.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+    <div class="page landscape" layout="landscape">
+        <div class="page_content">
+
+<!---------------------------------------------------------------------------------------------->
+<!-- C++ Page 1-->
+<!---------------------------------------------------------------------------------------------->
+
+<img class="logo" src="./images/ISO_C++_Logo.svg"/>
+
+<h2>Basic structure</h2>
+<pre><code class="hljs language-cpp">
+#include &lt;iostream&gt;
+int main(int argc, char *argv[]){
+    std::cout &lt;&lt; "Hello World";
+}  
+</code></pre>
+
+
+<h2>Comments</h2>
+<pre><code class="hljs language-cpp">
+//Line Comments
+
+/*
+Block Comments
+*/
+</code></pre>
+
+<h2>Variable initialization</h2>
+<pre><code class="hljs language-cpp">
+int x = 1;
+int y(1);
+int z{1};
+int a,b;
+</code></pre>
+
+<h2>Literals</h2>
+<pre><code class="hljs language-cpp">
+11;      //int
+21u;     //unsigned int
+31l;     //long
+41ul;    //unsigned long
+51lu;    //unsigned long
+
+3.14l;   //long double
+314E-5L; //long with exponent
+3.4e12f; //float
+
+0b010101 //binary
+0213;    //octal
+0x4b;    //hexadecimal
+
+'e';     //char
+"str";   //string
+
+L"str";  //wide string literal
+u8"str"; //UTF-8
+u"str";  //UTF-16 const char16_t[N]
+U"str";  //UTF-32 const char32_t[N]
+R"str";  //raw string
+
+true;    //boolean
+false;   //boolean
+
+const int i = 5; //constant
+</code></pre>
+
+<h2>Pointers and References</h2>
+<pre><code class="hljs language-cpp">
+int i(1);
+int *pi;
+pi = &amp;i; //pointer is set to address of i
+*pi;     //dereference pointer. equals 1
+
+char *mychar;   //char is 1 byte
+short *myshort; //short is 2 bytes
+long *mylong;   //long is 3 bytes
+
+++mychar;  //moves pointer by 1
+++myshort; //moves pointer by 2
+++mylongll //moves pointer by 3
+
+int x = 1;
+int& ref = x; //ref is a reference to x
+ref = 2;      //x now equals 2
+</code></pre>
+
+<h2>Smart Pointers</h2>
+<pre><code class="hljs language-cpp">
+#include &lt;memory&gt;
+std::unique_ptr&lt;Rect&gt; rect(new Rect(1,2));
+width = rect->getWidth();
+
+std::unique_ptr&lt;Rect&gt; rect2 = 
+    std::make_unique&lt;Rect&gt;(1,2);
+
+//Shared pointers
+std::shared_ptr&lt;Rect&gt rect3(new Rect(1,2));;
+std::make_shared&lt;Rect&gt; rect4 = 
+	std::make_shared&lt;Rect&gt {1,2};
+</code></pre>
+
+
+<h2>Arrays</h2>
+<pre><code class="hljs language-cpp">
+int myarray[20]; 
+//myarray is pointer to first element
+int *pArray;
+pArray = myarray; //valid
+
+pArray[5];//access 4th element of array
+pArray++;
+//pArray points to 2nd element of array
+*pArray = 10;
+//second element of array now equals 10
+
+//string literals are like arrays 
+const char *foo = "hello";
+foo[0]; //h
+foo[1]; //e
+*(foo+2);//l
+</code></pre>
+
+<h2>Functions</h2>
+<pre><code class="hljs language-cpp">
+int addition (int a, int b){
+    //argumens are passed by value
+    //meaning it makes a copy of a and b
+    return a + b;
+}
+
+int addition (float &a, float &b){
+    //a function can be overloaded by
+    //changing the type of arguments
+    return a + b;
+}
+
+int addition (int &a, int &b){
+    //add & to pass by reference
+    return a + b;
+}
+
+int addition (const int &a, const int &b){
+//adding const makes argument immutable
+    return a + b;
+}
+</code></pre>
+
+<h2>Functional Programming</h2>
+<p>Functions can be passed to a function by passing it's adress to the function:
+</p>
+<pre><code class="hljs language-cpp">
+int add(int x, int y){
+    return x + y;
+}
+
+int invoke(int x, int y, int 
+    (*func)(int, int)){
+    return func(x, y);
+}
+
+int main(){
+    invoke(20, 10, &add); //30
+}
+</code></pre>
+<p>C++ 11 adds a template class that allows passing functions as an object:</p>
+<pre><code class="hljs language-cpp">
+#include &lt;functional&gt;
+int add(int x, int y){
+    return x + y;
+}
+    
+int invoke(int x, int y, 
+    function&lt;int(int, int)&gt; func){
+    return func(x, y);
+}
+    
+int main(){
+    invoke(20, 10, &add); //30
+}
+</code></pre>
+
+<h2>Lambda's</h2>
+<pre><code class="hljs language-cpp">
+auto l=[](int a, int b){return a+b;}
+l(1,2) //3
+
+//variable capture
+int a = 2;
+[a](int b){a + b}(4) //6
+
+//captured vars can't be modified
+//mutable makes captured vars modifiable
+int c = 3;
+[c]() mutable {c++;}();
+c; //4
+
+//reference are also modifiable
+[&c](){c++}();
+c; //5
+
+[=](){a+c}; //[=]captures all vars
+[&]{c++}    //[&]caputures all vars as ref
+</code></pre>
+
+
+<h2>Structs</h2>
+<pre><code class="hljs language-cpp">
+struct product {
+  int weight;
+  double price;
+} apple, banana;
+
+apple.weight = 10;
+apple.price; //undefined
+banana.price = 1.2;
+
+//initialize members
+product *pProduct2 = new product();
+product product3 = product();
+product product4(); //ILLEGAL
+
+//pointer
+product aProduct;
+product *pProduct;
+aproduct.price = 15;
+pProduct = &amp;aProduct;
+pProduct->price; //15
+
+//struct with constructor
+struct rect {
+    int width;
+    int height;
+    rect(): width(0), height(0){};
+    rect(int aWidth, int aHeight): 
+        width(aWidth), height(aHeight){};
+};
+
+//initialization with default Constructor
+rect r1;
+r1.width    //0
+
+//initialization with  Constructor
+rect r2{1,2};
+r2.width;   //1
+r2.height;  //2
+
+rect r3 = rect(2,3)
+</code></pre>
+
+<h2>Enums</h2>
+<pre><code class="hljs language-cpp">
+enum Season{
+    spring = 0;
+    summer = 4;
+    autumn = 8;
+    winter = 12;
+};
+Season s = spring;
+int n = summer;
+int sNum = static_cast&lt;int&gt;(s);
+</code></pre>
+
+        </div>
+    </div>
+
+<!---------------------------------------------------------------------------------------------->
+<!--C++ page 2-->
+<!---------------------------------------------------------------------------------------------->
+
+
+    <div class="page landscape" layout="landscape">
+        <div class="page_content">
+            <img class="logo" src="./images/ISO_C++_Logo.svg"/>
+
+<h2>Classes</h2>
+<pre><code class="hljs language-cpp">
+class Rect{
+    friend class Square;
+    //Square class can access protected 
+    //members of Rect
+
+    friend class Shape::getArea();
+    //the getArea() member of shape can
+    //now access protected members of Rect
+
+    private:
+        int width, height;
+    public:
+        Rect(int a,int b): //constructor
+            width(a), height(b){};
+        ~Rect(){}          //Destructor
+        int getArea(){
+            return width * height;
+        }
+    protected:
+        //protected members can only 
+        //be accessed by child classes OR
+        //friend 
+}
+
+int main(){
+    Rect r(2,4);
+    r.width //ILLEGAL
+    Rect *pr = new Rect(3,4)
+}
+</code></pre>
+
+<h3>Operator overloading</h3>
+<pre><code class="hljs language-cpp">
+class Complex{
+    private:
+        int real, imag;
+    public:
+       Complex operator+(Complex const &obj){
+            Complex res;
+            res.real = real + obj.real;
+            res.imag = imag + obj.imag;
+            return res;
+        }
+}
+</code></pre>
+
+
+<h2>Special Class Members</h2>
+<table>
+    <tr>
+        <th>Member function</th>
+        <th>Form:</th>
+    </tr>
+    <tr>
+        <td>Default constructor</td>
+        <td>C::C();</td>
+    </tr>
+    <tr>
+        <td>Destructor</td>
+        <td>C::~C();</td>
+    </tr>
+    <tr>
+        <td>Copy constructor</td>
+        <td>C::C(const C&);</td>
+    </tr>
+    <tr>
+        <td>Copy assignment</td>
+        <td>C& operator= (const C&);</td>
+    </tr>
+    <tr>
+        <td>Move constructor</td>
+        <td>C::C(C&&);</td>
+    </tr>
+    <tr>
+        <td>C::C(C&&);</td>
+        <td>C& operator= (C&&);</td>
+    </tr>
+</table>
+
+<h3>Constructor</h3>
+<p>If a class definition has no constructors, the compiler assumes the class to have an 
+    implicitly defined default constructor. But as soon as a class has some constructor 
+    taking any number of parameters explicitly declared, the compiler no longer provides 
+    an implicit default constructor</p>
+
+<pre><code class="hljs language-cpp">
+class Example {
+    public:
+        int total;
+        Example (int initial_value) : 
+            total(initial_value) { };
+        void accumulate (int x) { 
+            total += x; 
+        };
+};
+Example ex(100);// ok: calls constructor
+Example ex;   // ILLEGAL
+</code></pre>
+
+<h3>Destructor</h3>
+<pre><code class="hljs language-cpp">
+class Example {
+    string* ptr;
+    public:
+        // constructors:
+        Example() : ptr(new string) {}
+        Example (const string& str) : 
+            ptr(new string(str)) {}
+        // destructor:
+        ~Example () {delete ptr;}
+        // access content:
+        const string& content() const {
+            return *ptr;
+        }
+};
+
+Example foo("str");
+delete foo; //deletes dangling pointer ptr
+</code></pre>
+
+<h3>Copy Constructor</h3>
+<p>If a class has no copy constructor, An implicit copy constructor is automatically defined.
+The default copy constructor makes shallow copy of all members. This means that pointer values
+are copied. Both classes would then have a pointer pointing to the same object. This would cause a
+problem when one of the classes deletes one of the pointers. This can be solved by defining a 
+custom copy constructor that performs a deep copy:
+</p>
+
+<pre><code class="hljs language-cpp">
+class Example {
+    string* ptr;
+    public:
+        Example (const string& str) : 
+            ptr(new string(str)) {}
+        ~Example () {delete ptr;}
+        // copy constructor:
+        Example (const Example& x) : 
+            ptr(new string(x.content())) {}
+        // access content:
+        const string& content() const {
+            return *ptr;
+        }
+};
+
+Example foo ("str");
+//calls copy constructor
+Example bar = foo;
+//Both foo and bar now have a pointer
+//pointing to a different string
+</code></pre>
+
+<h3>Copy assignment</h3>
+<p>When an assignment is performed on an existing object, the copy assignment operator is called.</p>
+<pre><code class="hljs language-cpp">
+class Example {
+    string* ptr;
+    public:
+        Example (const string& str) : 
+            ptr(new string(str)) {}
+        ~Example () {delete ptr;}
+        // copy constructor:
+        Example (const Example& x) : 
+            ptr(new string(x.content())) {}
+        // access content:
+        const string& content() const {
+            return *ptr;
+        }
+        Example operator= (const Example& x){
+            *ptr = x.content();
+            //The return value is 
+            //generally a reference to *this
+            //but is not required
+            return *this;
+        }
+};
+    
+Example foo ("str");
+Example baz ("str2");
+//calls copy constructor
+// because bar wasn't initalized
+Example bar = foo;
+//calls Copy assignment
+// because foo was already initialized
+foo = baz;
+</code></pre>
+
+<h3>Move constructor and assignment</h3>
+<p>Move constructor and assignment are similar to copy constructor and assignment. 
+The difference is that moving happens when the source of the value is an unnamed object.</p>
+
+<pre><code class="hljs language-cpp">
+class Example {
+    string* ptr;
+    public:
+        Example (const string& str) : 
+            ptr(new string(str)) {}
+        ~Example () {delete ptr;}
+        // move constructor
+        Example (Example&& x) : 
+            ptr(x.ptr) {x.ptr=nullptr;}
+        // move assignment
+        Example& operator= (Example&& x) {
+            delete ptr; 
+            ptr = x.ptr;
+            x.ptr=nullptr;
+            return *this;
+        }
+        // access content:
+        const string& content() const {
+            return *ptr;
+        }
+       // addition:
+       Example operator+(const Example& rhs){
+            return Example(
+                content()+rhs.content());
+        }
+};
+
+int main(){
+    Example6 foo ("Exam");
+    // move-construction
+    Example6 bar = Example6("ple"); 
+    // move-assignment
+    foo = foo + bar;                    
+}
+</code></pre>
+
+<h3>Inheritance</h3>
+
+<pre><code class="hljs language-cpp">
+class Parent {
+    public:
+        int id_p;
+    };
+
+class Child : public Parent {
+    public:
+        //call parent constructor
+        Child(): Parent(){}
+        int id_c;
+    };
+
+Child obj1;
+obj1.id_c = 7;
+//Child can access parent members
+obj1.id_p = 91;
+</code></pre>
+
+<pre><code class="hljs language-cpp">
+class Mother {
+    public:
+        int id_p;
+    };
+
+class Father {
+    public:
+        int id_p;
+    };
+//A class can have multiple parents
+class Child : public Mother, public Father {
+    public:
+        int id_c;
+};
+
+Child obj;
+obj.id_p = 91; //ILLEGAL 
+//Specify path first
+obj.Mother::p = 10;  
+obj.Father::p = 100;
+</code></pre>
+
+<pre><code class="hljs language-cpp">
+class Mother {
+    public:
+        int id_p;
+    };
+
+class Father {
+    public:
+        int id_p;
+    };
+class Child : virtual public Mother, 
+              virtual public Father {
+    public:
+        int id_c;
+};
+Child obj;
+obj.id_p = 91;//Possible using Virtual parents
+</code></pre>
+
+        </div>
+    </div>
+
+<!---------------------------------------------------------------------------------------------->
+<!--C++ page 3-->
+<!---------------------------------------------------------------------------------------------->
+
+<div class="page landscape" layout="landscape">
+        <div class="page_content">
+            <img class="logo" src="./images/ISO_C++_Logo.svg"/>
+
+<h2>Namespace</h2>
+<pre><code class="hljs language-cpp">
+namespace A{
+    int x = 5;
+}
+namespace B{
+    int x = 6;
+}
+namespace C {
+    int z = 7;
+}
+
+int main(){
+    using A::x;
+    std::out &lt;&lt; x; //5
+    using namespace B;
+    std::out &lt;&lt; y; //6
+    std::out &lt;&lt; C::z; //7
+}
+</code></pre>
+
+<h2>Templates</h2>
+<pre><code class="hljs language-cpp">
+template &lt;class T, int N&gt;
+T fixedMultiply(T val){
+    return val * N;
+}
+fixedMultiply&lt;int, 2&gt;(10) //20
+
+// recursive template
+template&lt;int I, class T&gt;
+struct my_tuple_element;
+// recursive case
+template&lt;int I, class H, class... T&gt;
+struct my_tuple_element&lt;I, std::tuple&lt;H, T...&gt;&gt;
+    : my_tuple_element&lt;I - 1, std::tuple&lt;T...&gt;&gt;{ 
+    };
+// base case
+template&lt; class H, class... T &gt;
+struct my_tuple_element&lt;0, std::tuple&lt;H, T...&gt;&gt;{
+    typedef H type;
+};
+template&lt;int I, class T &gt;
+using my_tuple_element_t = 
+    typename my_tuple_element&lt;I, T&gt;::type;
+
+</code></pre>
+
+<h2>Exceptions</h2>
+
+<pre><code class="hljs language-cpp">
+#include &lt;exception&gt;
+try {
+    throw std::exception();
+} catch(std::exception & e){
+    //catch block is executed when 
+    //error is thrown.
+}
+</code></pre>
+
+
+<h2>Preprocessors</h2>
+
+<pre><code class="hljs language-cpp">
+#define macro-name replacement-text
+#define MIN(a,b) (((a)&lt;(b)) ? a : b)
+
+int i = 100;
+int j = 30;
+MIN(i, j); //30
+
+#define SYMBOL
+
+#ifdef SYMBOL
+    //This is included if SYMBOL is defined
+#endif
+
+#ifndef SYMBOL
+    //This is included if SYMBOL is not defined
+#endif
+
+//The # operator converts token to string 
+//surrounded by quotes. 
+#define MKSTR( x ) #x
+MKSTR(HELLO C++) //"HELLO C++"
+
+//The ## operator concatenates two tokens
+#define CONCAT( x, y )  x ## y
+int xy = 100;
+cout &lt;&lt; concat(x, y); 
+//concat(x, y) is converted into xy
+//outputting 100
+
+__LINE__ //current number of lines of the program
+__FILE__ //current filename
+__DATE__ //the date as month/day/year
+__TIME__ //the time as hour:minute:second
+</code></pre>
+
+<h2>Header Guard</h2>
+<pre><code class="hljs language-cpp">
+#ifndef FOO_H
+#define FOO_H
+//Header code here
+#endif
+
+//For templates we can add an include
+//to the implementation
+#include "Foo.tpp"
+</code></pre>
+
+<h2>Union</h2>
+<pre><code class="hljs language-cpp">
+union S{
+    std::int32_t n;     // occupies 4 bytes
+    std::uint16_t s[2]; // occupies 4 bytes
+    std::uint8_t c;     // occupies 1 byte
+    ~S() {} // destructor
+} s; // create instance s of union S
+// the whole union occupies 4 bytes
+</code></pre>
+
+<h2>Standard Library</h2>
+<pre><code class="hljs language-cpp">
+//includes every standard library
+#include &lt;bits/stdc++.h&gt; 
+</code></pre>
+
+<h3>String</h3>
+<pre><code class="hljs language-cpp">
+//includes every standard library
+#include &lt;string&gt;
+
+std::string str = "string"
+str.size()      // 6 (bytes)
+str.length()    // 6 (bytes)
+
+//iterator
+for ( std::string::iterator 
+        it=str.begin(); 
+        it!=str.end(); 
+        ++it){
+    //prints string
+    std::cout &lt;&lt; *it;
+}
+
+//reverse iterator
+for (std::string::reverse_iterator 
+        rit=str.rbegin(); 
+        rit!=str.rend(); 
+        ++rit){
+    //prints gnirts
+    std::cout &lt;&lt; *rit;
+}
+
+//get char& at position
+str[2]; // outputs r
+str.at(2); // outputs r
+
+str.capacity(); // space allocated for str
+str.capacity(15) // Request a change in capacity
+str.max_size(); // maximum allocated space
+str.resize(3); // resize string to "str"
+str.clear(); // clear string to ""
+
+str.empty(); // test if string is empty
+
+str+= "str" //appends to string
+str.appends("in"); //appends to string
+str.push_back('g'); //appends char to string
+
+int at = 1;
+int subpos = 2; 
+int sublen = 3;
+//before str is "string"
+//after str is "sstrtring"
+str.insert(at,"a str", subpos, sublen);
+
+//before str is "sstrtring"
+//after str is "ssing"
+str.erase(2,4);
+
+//before str is "ssing"
+//after str is "sg"
+str.erase(str.begin()+1, str.end()-1);
+
+//before str is "sg"
+//after str is "string"
+str.replace(0,1,"strin");
+
+std::string s1 = "s1";
+std::string s2 = "s2";
+//s1 becomes s2
+//s2 becomes s1
+s1.swap(s2);
+
+//equality
+s1 == s2 //false
+
+std::string haystack ("There are two needles" 
+            " in this haystack with needles.");
+std::string needle ("needle");
+
+//finds position of the first character 
+// of the first match.
+std::size_t first = haystack.find(needle); // 14
+
+//finds position of the first character 
+// of the last match.
+std::size_t last = haystack.find(needle); // 45
+
+
+std::string sentence = "string with vowels";
+std::string v = "aeiou";
+//Finding first and last vowel
+std::size_t fv=sentence.find_first_of(v); //3
+std::size_t lv=sentence.find_last_of(v); //15
+
+//Finding first and last consonant
+std::size_t fc=sentence.find_first_not_of(v); //0
+std::size_t lc=sentence.find_last_not_of(v); //17
+
+//create substring from pos 7 with length 4
+std::string st = sentence.substr(7,4); //"with"
+</code></pre>
+
+<h3>Math</h3>
+<pre><code class="hljs language-cpp">
+#include &lt;cmath&gt;
+
+#define PI 3.14159265
+
+//paramaters in radians
+cos(60*PI/180.0); //0
+sin(30.0*PI/180); //0.5
+tan (45.0*PI/180.0); //1
+
+acos(0.5)*(180.0/PI); //60
+asin(0.5)*(180.0/PI); //30
+atan(1)*(180.0/PI); //45
+
+exp(5.0); //e^(5)
+log(5.0); //ln(5)
+log10(10); //base 10 log
+
+//split float into integral and a fractional part
+double param, fractpart, intpart;
+param = 3.14159265;
+fractpart = modf(param , &intpart);
+fractpart; //0.141593
+intpart; //3
+
+exp2(8); //2^(8)
+
+pow(7.0, 3.0); // 7.0^(3.0)
+sqrt(9,0); // 3.0
+cbrt(27.0); // 3.0
+
+ceil(2.3); // 3.0f
+floor(2.6); // 2.0f
+trunc(2.6); // 2.0f
+trunc(2.4); // 2.0f
+
+round(2.4); // 2.0f
+lround(2.4); // 2
+round(2.6); // 3.0f
+lround(2.6); // 3
+nearbyint(2.3); //2
+
+//remainder of division
+fmod(5.3, 2.0); // 1.3
+remainder(5.3, 2.0); // -0.7
+
+//positive difference between numbers
+fdim (2.0, 1.0); = 1.000000
+
+fmax (-100.0, 1.0); // 1.0
+fmin (-100.0, 1.0); // -100.0
+</code></pre>
+        </div>
+    </div>
+
+<!---------------------------------------------------------------------------------------------->
+<!--C++ page 4-->
+<!---------------------------------------------------------------------------------------------->
+
+
+
+    <div class="page landscape" layout="landscape">
+        <div class="page_content">
+            <img class="logo" src="./images/ISO_C++_Logo.svg"/>
+
+<h3>Algorithm</h3>
+<pre><code class="hljs language-cpp">
+#include &lt;algorithm&gt;
+
+std::array&lt;int,8&gt; foo = {3,5,7,11,13,17,19,23};
+std::array&lt;int,8&gt; bar = {3,5,5,11,15,17,19,25};
+
+</code></pre>
+<h4>all_of</h4>
+<pre><code class="hljs language-cpp">
+//check if all numbers in array are uneven 
+std::all_of(foo.begin(), 
+            foo.end(), 
+            [](int i){return i%2;}); //true
+</code></pre>
+<h4>any_of</h4>
+<pre><code class="hljs language-cpp">
+//check if array contains even number 
+std::any_of(foo.begin(), 
+            foo.end(), 
+            [](int i){return i%2 == 0;});//false
+</code></pre>
+<h4>none_of</h4>
+<pre><code class="hljs language-cpp">
+//checks if none of array is even number
+std::none_of(foo.begin(), 
+             foo.end(), 
+             [](int i){return i%2 == 0;});//true
+</code></pre>
+<h4>for_each</h4>
+<pre><code class="hljs language-cpp">
+//prints every number in array
+void myfunction (int i) {
+    std::cout &lt;&lt; i;
+}
+for_each(foo.begin(), foo.end(), myfunction);
+</code></pre>
+<h4>find</h4>
+<pre><code class="hljs language-cpp">
+//check if 5 is in array
+std::vector&lt;int&gt;::iterator it;
+it = std::find(foo.begin(), 
+               foo.end(), 
+               5});
+//find returns iter end if val not found
+if (it != foo.end()){
+    cout &lt;&lt; *it; //prints 5
+    cout &lt;&lt; it - foo.begin(); // prints 1
+}
+</code></pre>
+<h4>find_if</h4>
+<pre><code class="hljs language-cpp">
+//check if 11 is in array using lambda
+std::vector&lt;int&gt;::iterator it2;
+it2 = std::find_if(foo.begin(), 
+                   foo.end(), 
+                   [](int i){return i == 11;});
+//find_if returns iter end if condition not met
+if (it2 != foo.end()){
+    cout &lt;&lt; *it2; //prints 11
+    cout &lt;&lt; it2 - foo.begin(); // prints 3
+}
+</code></pre>
+<h4>find_if_not</h4>
+<pre><code class="hljs language-cpp">
+//check if 11 is not in array using lambda
+std::vector&lt;int&gt;::iterator it3;
+it3 = std::find_if_not(foo.begin(), 
+                   foo.end(), 
+                   [](int i){return i != 11;});
+if (it3 != foo.end()){
+    cout &lt;&lt; *it3; //prints 11
+    cout &lt;&lt; it3 - foo.begin(); // prints 3
+}
+</code></pre>
+<h4>find_end</h4>
+<pre><code class="hljs language-cpp">
+//check if element from {1,3,5} in array
+// and returns last occurance
+int needle[] = {1,3,5};
+std::vector&lt;int&gt;::iterator it4;
+it4 = std::find_end(foo.begin(), 
+                   foo.end(), 
+                   needle,
+                   needle + 3,
+                   [](int x, int y){x == y});
+if (it4 != foo.end()){
+    cout &lt;&lt; *it4; //prints 5
+    cout &lt;&lt; it4 - foo.begin(); // prints 1
+}
+</code></pre>
+<h4>find_first_of</h4>
+<pre><code class="hljs language-cpp">
+//check if element from {1,3,5} in array
+// and returns first occurance
+int needle[] = {1,3,5};
+std::vector&lt;int&gt;::iterator it5;
+it5 = std::find_first_of(foo.begin(), 
+                        foo.end(), 
+                        needle,
+                        needle + 3,
+                        [](int x, int y){x == y});
+if (it5 != foo.end()){
+    cout &lt;&lt; *it5; //prints 3
+    cout &lt;&lt; it5 - foo.begin(); // prints 0
+}
+</code></pre>
+<h4>adjacent_find</h4>
+<pre><code class="hljs language-cpp">
+//check for consecutive elements that satisfy pred
+std::vector&lt;int&gt;::iterator it6;
+it6 = std::adjacent_find(bar.begin(), 
+                        bar.end(), 
+                        [](int x, int y){x == y});
+if (it6 != foo.end()){
+    cout &lt;&lt; *it6; //prints 5
+    cout &lt;&lt; it6 - bar.begin(); // prints 1
+}
+</code></pre>
+
+<h4>count</h4>
+<pre><code class="hljs language-cpp">
+//counts elements that match val
+int mycount = std::count(bar.begin(), 
+                        bar.end(), 
+                        5); // 2
+</code></pre>
+<h4>count_if</h4>
+<pre><code class="hljs language-cpp">
+//counts elements that satisfy condition
+int mycount = std::count_if(bar.begin(), 
+                        bar.end(), 
+                        [](int x){x==5}); // 2
+</code></pre>
+
+<h4>mismatch</h4>
+<pre><code class="hljs language-cpp">
+//compares elements of 2 iterators and 
+//finds mismatches
+std::pair&lt;std::vector&lt;int&gt;::iterator,int*&gt; mypair; 
+mypair = std::mismatch(foo.begin(), 
+                            foo.end(), 
+                            bar.begin(),
+                            [](int x, int y){x==y});
+*mypair.first //7
+*mypair.second //5
+++mypair.first; 
+++mypair.second;
+*mypair.first //23
+*mypair.second //25
+</code></pre>
+
+<h4>equal</h4>
+<pre><code class="hljs language-cpp">
+//compares 2 ranges
+//returns true if ranges are equal
+std::equal(foo.begin(), 
+            foo.end(), 
+            bar.begin(), 
+            [](int x, int y){x==y}); //false
+</code></pre>
+
+<h4>is_permutation</h4>
+<pre><code class="hljs language-cpp">
+std::array&lt;int,5&gt; foo2 = {1,2,3,4,5};
+std::array&lt;int,5&gt; bar2 = {3,1,4,5,2};
+std::is_permutation (foo.begin(), 
+                    foo.end(), 
+                    bar.begin(),
+                    [](int x, int y){x==y})// true
+</code></pre>
+
+<h4>search</h4>
+<pre><code class="hljs language-cpp">
+//searches if range contains sequence
+std::vector&lt;int&gt;::iterator it7;
+int needle2[] = {11,13,17};
+it7 = std::search(foo.begin(), 
+                  foo.end(), 
+                  needle2,
+                  needle2+4,
+                  [](int x, int y){x==y});
+if (it7 != foo.end()){
+    cout &lt;&lt; *it7; //prints 11
+    cout &lt;&lt; it7 - foo.begin(); // prints 3
+}
+</code></pre>
+
+<h4>search_n</h4>
+<pre><code class="hljs language-cpp">
+//searches if range contains sequence of n elements
+std::vector&lt;int&gt;::iterator it8;
+//search for 2 consecutives 5's
+it8 = std::search_n(bar.begin(), 
+                    bar.end(), 
+                    2,
+                    5,
+                    [](int x, int y){x==y});
+if (it8 != foo.end()){
+    cout &lt;&lt; *it8; //prints 5
+    cout &lt;&lt; it8 - bar.begin(); // prints 1 
+}
+</code></pre>
+<h4>copy, copy_n, copy_if</h4>
+<pre><code class="hljs language-cpp">
+//copy a range
+std::vector&lt;int&gt; myvector(7);
+std::copy(foo.begin(), 
+              foo.end(), 
+              myvector.begin());
+
+std::vector&lt;int&gt; myvector2(7);
+std::copy_n(foo.begin(), 
+              7, 
+              myvector1.begin()); 
+              
+std::vector&lt;int&gt; myvector3(foo.size());
+
+//copy uneven numbers
+it9 = std::copy_if (foo.begin(), 
+    foo.end(),
+    myvector3.begin()
+    [](int i){return i%2;});
+myvector3.resize(std::distance(bar.begin(),it9));
+</code></pre>
+
+<h4>fill, fill_n</h4>
+<pre><code class="hljs language-cpp">
+//fill vector with 4 1's and 4 2's
+std::vector&lt;int&gt; myvector4 (8);
+std::fill(myvector4.begin(),myvector4.end()-4,1);
+std::fill(myvector4.begin()+4,myvector4.end(),2);
+
+//fill vector with 4 1's and 4 2's
+std::vector&lt;int&gt; myvector5(8);
+std::fill(myvector5.begin(),4 ,1);
+std::fill(myvector5.begin()+4, 4,2);
+</code></pre>
+
+<h4>sort, is_sorted</h4>
+<pre><code class="hljs language-cpp">
+std::vector&lt;int&gt; myvector6{32,71,12,45,26,80,53,33};
+std::sort (myvector.begin(), 
+            myvector.end(),
+            [](int x, int y){return x&lt;y;});
+std::is_sorted(myvector.begin(), 
+                myvector.end(),
+                [](int x, int y){return x&lt;y;})//true
+</code></pre>
+
+<h4>binary search</h4>
+<pre><code class="hljs language-cpp">
+//perform only on sorted array
+std::vector&lt;int&gt; myvector7{10,10,10,20,20,20,30,30};
+std::vector&lt;int&gt;::iterator low,up;
+//search for first number &lt;= 20
+low = std::lower_bound (v.begin(), v.end(), 20);
+//search for first number that &lt;20 
+up = std::upper_bound (v.begin(), v.end(), 20);
+
+low- v.begin() // 3
+up - v.begin() // 6
+</code></pre>
+
+<h4>merge</h4>
+<pre><code class="hljs language-cpp">
+//merge sorted ranges
+std::vector&lt;int&gt; first{1,2,3,5};
+std::vector&lt;int&gt; second{4,6,7,8};
+std::vector&lt;int&gt; v(8);
+std::merge(first.begin(),
+            first.end(),
+            second.begin(),
+            second.end(),
+            v.begin());
+v // {1,2,3,4,5,6,7,8}
+</code></pre>
+<h4>min max</h4>
+<pre><code class="hljs language-cpp">
+min(1,2) // 1
+max(1,2) // 2
+</code></pre>
+        </div>
+    </div>
+
+<!--C++ page 5-->
+
+
+    <div class="page landscape" layout="landscape">
+        <div class="page_content">
+            <img class="logo" src="./images/ISO_C++_Logo.svg"/>
+
+<h3>Containers</h3>
+<h4>array</h4>
+<p>Arrays are fixed-size sequence containers: they hold a specific number of elements ordered in a strict linear sequence.</p>
+<pre><code class="hljs language-cpp">
+#include &lt;array&gt;
+std::array&lt;int,5&gt; myints;
+myints.size(); //5
+myints.max_size(); //5
+myints.empty(); //false
+
+for(int i = 0; i&lt;5; i++){
+    myints[i] = i + 1;
+}
+
+int* pi = myints.data() //pointer to first el
+
+myints[0]; // 1 
+myints.at(0); //1
+myints.at(1); //undefined
+
+myints.front(); //1;
+myints.back(); //5;
+
+myints.begin(); // iterator to beginning
+myints.end(); // iterator to end
+</code></pre>
+
+<h4>vector</h4>
+<p>Vectors are sequence containers representing arrays that can change in size.</p>
+<pre><code class="hljs language-cpp">
+#include &lt;vector&gt;
+std::vector&lt;int&gt; myints;
+for (int i=0; i&lt;100; i++){
+    myints.push_back(i + 1);
+} 
+
+myints.size(); //100
+myints.capacity(); //possibly 128
+myints.max_size(); //possibly 1073741823
+myints.empty(); //false
+
+int* pi = myints.data(); //pointer to first el
+
+myints[0]; // 1 
+myints.at(0); //1
+
+myints.front(); //1;
+myints.back(); //99;
+
+myints.begin(); // iterator to beginning
+myints.end(); // iterator to end
+
+//Reduce size to 95 and set all values to 0
+myints.assign(myints.begin(), 
+                myints.end()-5, 
+                0);
+
+myints.push_back(1) //add 1 to end of vector
+myints.pop_back() //remove last element of vector
+
+//insert values into vector
+int myarray [] = {1,2,3};
+myints.insert(myints.begin(), 
+                myarray, 
+                myarray+3);
+
+//remove first 3 elements and reduces vector size
+myints.erase(myints.begin(),
+                myints.begin() + 3);
+
+// erase the 6th element
+myints.erase (myints.begin() + 5);
+</code></pre>
+
+<h4>deque</h4>
+<p>deque is a double-ended queue.</p>
+<pre><code class="hljs language-cpp">
+#include &lt;deque&gt;
+std::deque&lt;int&gt; dq;
+dq.push_back(1);
+dq.push_front(2);
+
+dq.front(); // 2
+dq.back(); // 1
+
+dq.pop_back(); //Delete last element 
+dq.pop_front(); //Delete first element
+</code></pre>
+
+<h4>forward_list</h4>
+<p>Forward lists are sequence containers that allow constant time insert and erase operations anywhere within the sequence.
+They are implemented as singly-linked lists.
+</p>
+<pre><code class="hljs language-cpp"> 
+#include &lt;forward_list&gt; 
+std::forward_list&lt;int&gt; fw;
+
+fw.assign({1,2,3}); // Assigns new contents
+                    // replacing current contents
+
+fw.push_front(4);   // insert element at beginning
+fw.pop_front();     // delete first element
+fw.front();         // get first element
+
+fw.before_begin() //iterator to before beginning
+fw.begin(); // iterator to beginning
+fw.end(); // iterator to end
+
+//insert 10 begin of list
+//it points to 10
+std::forward_list&lt;int&gt;::iterator it;
+it = fw.insert_after(fw.before_begin(), 10);
+//insert 10 begin of list
+
+//insert 1,2,3 after the previously added 10
+//it points to 3
+it = fw.insert_after(it.before_begin(), {1,2,3});
+
+//remove first element of list
+fw.erase_after(fw.before_begin());
+
+//remove ALL elements with the value 1
+fw.remove(1);
+
+//remove ALL elements based on predicate
+fw.remove_if([](const int& val){ val == 1 });
+
+fw.unique(); //remove duplicates from list
+
+fw.sort(); //sort the list
+</code></pre>
+<h4>list</h4>
+<p>Lists are sequence containers that allow constant time insert and erase operations anywhere within the sequence, and iteration in both directions.
+List containers are implemented as doubly-linked lists</p>
+<pre><code class="hljs language-cpp">                   
+#include &lt;list&gt;
+std::list&lt;int&gt; lst({2,8,7,5,3,1,4})
+
+//list has all members of forward_list
+// with added members to access the end of list
+lst.push_back(2) //add item to end of list
+lst.pop_back() //remove item from end of list
+lst.back() //get's last item of list 
+</code></pre>
+
+<h4>stack</h4>
+<p>LIFO stack</p>
+<pre><code class="hljs language-cpp">                   
+#include &lt;stack&gt;
+
+std::stack&lt;int&gt; stack;
+
+stack.empty(); // test whether stack is empty
+stack.size();  // return size
+stack.top();   // access top element
+stack.push();  // insert element
+stack.pop();   // remove top element
+</code></pre>
+
+<h4>queue</h4>
+<p>FIFO queue</p>
+<pre><code class="hljs language-cpp">
+#include &lt;queue&gt;
+std::queue&lt;int&gt; queue;
+
+queue.empty(); // test whether queue is empty
+queue.size();  // return size
+queue.front(); // access front element
+queue.back();  // access last element
+queue.push();  // insert element
+queue.pop();   // remove next element
+
+</code></pre>
+<h4>priority_queue</h4>
+<p>Priority queues are a type of container adaptors, 
+specifically designed such that its first element is always the greatest of the elements it contains</p>
+<pre><code class="hljs language-cpp">
+#include &lt;priority_queue&gt;
+#include &lt;type_traits&gt;
+//Example constructor using lambda
+auto comp = [](int lhs, int rhs){return lhs &gt; rhs;};
+std::priority_queue&lt;int, 
+                    std::vector&lt;int&gt;, 
+                    decltype(comp)&gt; pq(comp);
+
+//Example constructor using struct
+struct CustomCompare{
+    bool operator()(const int& lhs, 
+                    const int& rhs){
+        return lhs &lt; rhs;
+    }
+};
+priority_queue&lt;int,vector&lt;int&gt;, CustomCompare&gt; p2;
+
+pq.empty(); // test whether priority queue is empty
+pq.size();  // return size
+pq.front(); // access front element
+pq.back();  // access last element
+pq.push();  // insert element
+pq.pop();   // remove next element
+</code></pre>
+
+<h4>set</h4>
+<p>Sets are containers that store unique elements following a specific order.
+Sets are typically implemented as binary search trees.
+</p>
+<pre><code class="hljs language-cpp">
+#include &lt;set&gt;
+std::set&ltint&gt; set;
+
+set.insert(10); //insert element
+set.erase(10); //remove element with val 10
+set.find(10); //get iterator to element 10  
+
+set.clear(); //remove all elements from set
+</code></pre>
+
+<h4>multiset</h4>
+<p>Multisets are containers that store elements following a specific order, 
+    and where multiple elements can have equivalent values.
+Multisets are typically implemented as binary search trees.
+</p>
+<pre><code class="hljs language-cpp">
+#include &lt;multiset&gt;
+
+std::multiset&lt;int&gt; ms;
+
+ms.insert(10); //insert element
+ms.erase(10); //remove element with val 10
+ms.find(10); //get iterator to element 10  
+
+ms.clear(); //remove all elements from multiset
+</code></pre>
+
+
+<h4>map</h4>
+<p>Maps are associative containers that store elements formed by a combination of a key value and a mapped value, 
+    following a specific order. Maps are typically implemented as binary search trees.</p>  
+<pre><code class="hljs language-cpp">
+#include &lt;map&gt;
+std::map&lt;char,int&gt; map;
+
+//insert element into map
+map['a']=10;
+map['b']=30;
+map['c']=50;
+map['d']=70;
+
+map.insert(std::pair&lt;char,int&gt;('a',100) );
+
+// erasing by iterator
+std::map&lt;char,int&gt;::iterator it;
+it=map.find('b');
+map.erase(it);
+
+// erasing by iterator
+map.erase('c');
+
+//get elements from map
+mymap.at('a') // 10
+
+//iterate over map
+for (auto& x: map) {
+    std::cout &lt;&lt; x.first &lt;&lt; ": " &lt;&lt; x.second &lt;&lt; '\n';
+}
+</code></pre>
+
+        </div>
+    </div>
+
+<!---------------------------------------------------------------------------------------------->
+<!--C++ page 6-->
+<!---------------------------------------------------------------------------------------------->
+
+    <div class="page landscape" layout="landscape">
+        <div class="page_content">
+            <img class="logo" src="./images/ISO_C++_Logo.svg"/>
+
+<h4>multimap</h4>
+<p>Multimaps are associative containers that store elements formed by a combination of a key value and a mapped value, 
+    following a specific order, and where multiple elements can have equivalent keys. Multimaps are typically implemented as binary search trees.</p>
+
+<h4>multimap</h4>
+<pre><code class="hljs language-cpp">
+#include &lt;multimap&gt;
+
+std::multimap&lt;char,int&gt; mp;
+mp.insert(std::pair&lt;char,int&gt;('a',10));
+mp.insert(std::pair&lt;char,int&gt;('b',20));
+//duplicate keys are allowed 
+mp.insert(std::pair&lt;char,int&gt;('b',30)); 
+mp.insert(std::pair&lt;char,int&gt;('c',40));
+mp.insert(std::pair&lt;char,int&gt;('d',50));
+mp.insert(std::pair&lt;char,int&gt;('d',60));
+mp.insert(std::pair&lt;char,int&gt;('e',70));
+mp.insert(std::pair&lt;char,int&gt;('f',80));
+
+//get iterator to element with key
+std::multimap&lt;char,int&gt;::iterator it;
+it = mp.find('b'); //get iterator to first b;
+it->second; // 20
+
+//get range of equal elemts
+std::pair &lt;std::multimap&lt;char,int&gt;::iterator, 
+           std::multimap&lt;char,int&gt;::iterator&gt; rn;
+
+rn = mp.equal_range('b');
+
+for(std::multimap&lt;char,int&gt;::iterator it=rn.first; 
+        it != rn.second; 
+        ++it){
+    //prints 20 and 30
+    std::cout &lt;&lt; it->second &lt;&lt; std::endl;
+}
+
+mp.count('b') //counts 2 el with key 'b'
+</code></pre>
+
+<h4>unordered_set</h4>
+<p>Unordered sets are containers that store unique elements in no particular order, 
+    and which allow for fast retrieval of individual elements based on their value.</p>
+<pre><code class="hljs language-cpp">
+#include &lt;unordered_set&gt;
+
+std::unordered_set&lt;std::string&gt; uos({"r","g"});
+
+//find item in set
+std::unordered_set&lt;std::string&gt;::const_iterator it; 
+uos.find("r");
+if (!it == uos.end()){
+    *it; // "r"
+};
+
+uos.count("r"); // 1
+uos.insert ({"p","o"}) //insert into set
+uos.erase("p"); //erase by key
+uos.erase(uos.begin()); //erase by iterator
+uos.erase(uos.begin(), uos.end()); //erase by range
+</code></pre>
+
+<h4>unordered_multiset</h4>
+<p>Unordered multisets are containers that store elements in no particular order, 
+allowing fast retrieval of individual elements based on their value, much like unordered_set containers, 
+but allowing different elements to have equivalent values.</p>
+<pre><code class="hljs language-cpp">
+#include &lt;unordered_multiset&gt;
+
+std::unordered_multiset&lt;std::string&gt;uoms({"r"});
+uoms.insert ({"p","p"}); //insert into set
+
+//find range of same elements
+auto range = uoms.equal_range("p");
+while (range.first != range.second ) {
+    //prints "p" 2 times
+    std::cout &lt;&lt; *myrange &lt;&lt; std::endl;
+    myrange++;
+}
+</code></pre>
+
+<h4>unordered_map</h4>
+<p>Unordered maps are associative containers that store elements formed by the combination of a key value and a mapped value, 
+    and which allows for fast retrieval of individual elements based on their keys.</p>
+    
+<pre><code class="hljs language-cpp">
+#include &lt;unordered_map&gt;
+
+std::unordered_map&lt;std::string,std::string&gt; stringmap
+    ({{"apple","red"},{"lemon","yellow"}});
+
+//adding to map
+stringmap["banana"]="yellow";
+stringmap["cucumber"]="green"; 
+
+std::cout &lt;&lt; stringmap["banana"] //prints yellow
+stringmap["apple"] = "green" 
+
+stringmap.erase ("apple"); // erasing by key
+// erasing by iterator
+stringmap.erase(stringmap.begin());
+
+stringmap.clear(); // clear entire map
+</code></pre>
+
+<h4>unordered_multimap</h4>
+<p>Unordered multimaps are associative containers that store elements formed by the combination of a key value and a mapped value, much like unordered_map containers, 
+    but allowing different elements to have equivalent keys.</p>
+
+<pre><code class="hljs language-cpp">
+#include &lt;unordered_multimap&gt;
+
+std::unordered_multimap&lt;std::string,std::string&gt; 
+    stringmap;
+std::unordered_multimap&lt;std::string,std::string&gt; 
+    stringmap({{"apple","r"},{"apple","g"}});
+
+//inserting pair into multimap
+std::pair&lt;std::string,int&gt; bpair ("banana", "y");
+stringmap.insert (bpair); 
+
+//find single element with key apple
+stringmap.find("apple")->second; // r
+
+//finding all elements with key apple
+auto range = stringmap.equal_range("apple");
+for_each (
+    range.first,
+    range.second,
+    [](stringmap::value_type& x){std::cout &lt;&lt; x.second;}
+);
+
+//counting elements with key apple
+stringmap.count("apple") // 2
+</code></pre>
+
+
+<h3>Pair</h3>
+<pre><code class="hljs language-cpp">
+#include &lt;pair&gt;
+
+std::pair &lt;std::string,double&gt; pair;
+pair.first = "str"
+pair.second = 2.2;
+
+std::pair &lt;int,int&gt; foo;
+foo = std::make_pair (10,20);
+</code></pre>
+
+
+<h3>Tuple</h3>
+<p>A tuple is an object capable to hold a collection of elements. Each element can be of a different type.</p>
+<pre><code class="hljs language-cpp">
+#include &lt;tuple&gt;
+
+std::tuple&lt;int, std::string, double&gt; 
+    t1{42, "Test", -3.14};
+auto t2 = std::make_tuple ("test", 3.1, 14, 'y');
+
+//size
+std::tuple_size&lt;decltype(t1)&gt;::value; // 3
+
+std::get&lt;1&gt;(t2); //3.1
+std::get&lt;1&gt;(t2) = 12.5;
+
+// unpacking tuple into variables
+int myint;
+std::string str;
+float f;
+std::tie(myint, str, f) = mytuple;   
+myint; //42
+</code></pre>
+
+<h2>Input/output with files</h2>
+
+<pre><code class="hljs language-cpp">
+#include &lt;fstream&gt;
+//Basic usage
+int main () {
+    ofstream myfile;
+    myfile.open ("example.txt");
+    myfile &lt;&lt; "Writing this to a file.\n";
+    myfile.close();
+    return 0;
+}
+</code></pre>
+
+<h3>Input/output with files</h3>
+
+<table>
+    <tr>
+        <td>
+            ios::in
+        </td>
+        <td>
+            Open for input operations.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ios::out    
+        </td>
+        <td>
+            Open for output operations.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ios::binary
+        </td>
+        <td>
+            Open in binary mode.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ios::ate
+        </td>
+        <td>
+            Set the initial position at the end of the file.
+            If this flag is not set, the initial position is the beginning of the file.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ios::app
+        </td>
+        <td>
+            All output operations are performed at the end of the file, appending the content to the current content of the file.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ios::trunc  
+        </td>
+        <td>
+            If the file is opened for output operations and it already existed, its previous content is deleted and replaced by the new one.
+        </td>
+    </tr>
+</table>
+
+<pre><code class="hljs language-cpp">
+ofstream myfile;
+//Multiple options can be combined using the bitwise operator
+myfile.open ("example.bin", ios::out | 
+                            ios::app | 
+                            ios::binary);
+myfile.close()
+</code></pre>
+
+<h3>Text files</h3>
+<pre><code class="hljs language-cpp">
+// writing on a text file
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+using namespace std;
+
+int main () {
+  ofstream myfile ("example.txt");
+  if (myfile.is_open())
+  {
+    myfile &lt;&lt; "This is a line.\n";
+    myfile &lt;&lt; "This is another line.\n";
+    myfile.close();
+  }
+  else cout &lt;&lt; "Unable to open file";
+  return 0;
+}
+</code></pre>
+
+<h3>Binary files</h3>
+<pre><code class="hljs language-cpp">
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+using namespace std;
+
+int main () {
+  streampos size;
+  char * memblock;
+
+  ifstream file ("example.bin", ios::in |
+                                ios::binary |
+                                ios::ate);
+  if (file.is_open())
+  {
+    //tellg gets position 
+    //in input sequence
+    size = file.tellg(); 
+    memblock = new char [size];
+    //seekg sets the position of the 
+    //next character to be extracted
+    file.seekg (0, ios::beg); 
+    file.read (memblock, size);
+    file.close();
+
+    cout &lt;&lt; "the entire file content is in memory";
+
+    delete[] memblock;
+  }
+  else cout &lt;&lt; "Unable to open file";
+  return 0;
+}
+</code></pre>
+
+        </div>
+    </div>
+<!---------------------------------------------------------------------------------------------->
+<!-- PYTHON-->
+<!---------------------------------------------------------------------------------------------->
+
+    <div class="page landscape" layout="landscape">
+        <div class="page_content">
+            <img class="logo" src="./images/Python-logo.svg"/>
+    
+<h2>Basic structure</h2>
+<pre><code class="hljs language-python">
+if __name__ == "__main__":
+    print("Hello World")
+</code></pre>
+
+<h2>Comments</h2>
+<pre><code class="language-python">
+# Line comments
+
+"""
+This is a 
+multiline comment
+"""
+</code></pre>
+
+<h2>Variable initialization</h2>
+<pre><code class="language-python">
+num = None
+x = 1
+</code></pre>
+
+<h2>Literals</h2>
+<pre><code class="language-python">
+s = 'single quoted string'
+s2 = "double quoted string"
+
+#multiline string literal
+s3 = """This is a multiline 
+string 
+literal
+"""
+
+b1 = 0b10100    #binary
+d = 10          #decimal
+o = 0o320       #octal
+h = 0x12b       #hexidecimal
+
+f = 45.0        #float
+f2 = 3.1525e2   #float
+c = 7 + 5j      #complex
+
+t = True        #boolean
+f = False       #boolean
+
+lst = [1, 2, 3] #list
+tpl = (2, "s")  #tuple
+dct = {'a':1, 'b': 2} #dict
+set = {1, 2, 3} #set
+</code></pre>
+
+<h2>Functions</h2>
+<pre><code class="language-python">
+def add(a, b):
+    return a + b
+
+#optional arguments
+def func(a, opt=2)
+    return a + opt
+
+#unpacking list
+def args(*args):
+    print(args)
+
+args("a" , "b") #output: ('a', 'b')
+
+#unpacking dict
+def kwargs(**kwargs):
+    print(args)
+
+kwargs(n="H", l="W") #output: {'n': 'H', 'l': 'W'}
+</code></pre>
+
+<h2>Closure's</h2>
+<pre><code class="language-python">
+def generate_power(exponent):
+    def power(base):
+        return base ** exponent
+    return power
+
+raise_two = generate_power(2)
+raise_two(4) #outputs 4^2
+
+#decorators
+def generate_power(exponent):
+    def power(func):
+        def inner_power(*args):
+            base = func(*args)
+            return base ** exponent
+        return inner_power
+    return power
+
+@generate_power(2)
+def raise_two(n):
+    return n
+
+raise_two(7) #outputs 7^2
+</code></pre>
+
+<h2>Type hints</h2>
+<pre><code class="language-python">
+def greeting(name: str) -&gt; str:
+    return 'Hello ' + name
+
+from typing import NewType
+UserId = NewType('UserId', int)
+some_id = UserId(524313)
+
+#inheritance
+UserId = NewType('UserId', int)
+ProUserId = NewType('ProUserId', UserId)
+
+#generic types
+from typing import TypeVar, Generic
+from logging import Logger
+
+class LoggedVar(Generic[T]):
+    def __init__(self, value: T, name: str, logger: Logger) -&gt; None:
+        self.name = name
+        self.logger = logger
+        self.value = value
+
+    def set(self, new: T) -&gt; None:
+        self.log('Set ' + repr(self.value))
+        self.value = new
+
+    def get(self) -&gt; T:
+        self.log('Get ' + repr(self.value))
+        return self.value
+
+    def log(self, message: str) -&gt; None:
+        self.logger.info('%s: %s', 
+                         self.name, 
+                         message)
+</code></pre>
+
+<h2>Lambda's</h2>
+<pre><code class="language-python">
+add = lambda a, b: a + b
+add(1,3)    #returns 4
+</code></pre>
+    
+<h2>Struct</h2>
+<pre><code class="language-python">
+from dataclasses import dataclass
+
+@dataclass
+class Point:
+    x: float
+    y: float
+    z: float = 0.0
+
+p = Point(1.5, 2.5)
+
+from typing import NamedTuple
+class MyStruct(NamedTuple):
+    foo: str
+    bar: int
+    baz: list
+#NamedTuples are immutable
+</code></pre>
+
+<h2>Enums</h2>
+<pre><code class="language-python">
+from enum import Enum
+class Color(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+
+Color.RED.name  #outputs RED
+Color.RED.value #outputs 1
+
+#iterate over enum
+for color in Color:
+    print color
+
+Color(1)        #outputs &lt;Color.RED: 1&gt;
+Color['RED']    #outputs &lt;Color.RED: 1&gt;
+</code></pre>
+
+<h2>List comprehension</h2>
+<pre><code class="language-python">
+lst = [1,2,3,4]
+#filter odd numbers
+output = [i for i in lst if i % 2 == 0]
+# output is [2, 4]
+
+#add 1 to every item in list
+output2 = [i + 1 for i in lst]
+# output2 is [2,3,4,5]
+</code></pre>
+
+<h2>Dict comprehension</h2>
+<pre><code class="language-python">
+dct = {'name': 'Pooka', 'age': 5}
+#switch key and value
+output = {val: key for key, val in dct.items()}
+# output is dct = {'Pooka': 'name', 5 : 'age'}
+</code></pre>
+
+<h2>Slicing lists</h2>
+<pre><code class="language-python">
+lst = [0,1,2,3,4,5,6]
+
+#syntax:    list[start:stop:step] 
+#           list[start:]
+#           list[:stop]
+#           list[:]
+
+lst[:]      # [0,1,2,3,4,5,6]
+
+lst[2]      # 2
+lst[:2]     # [0,1]
+lst[2:]     # [2, 3, 4, 5, 6]
+lst[1:3]    # [1, 2]
+lst[0:6:2]  # [0, 2, 4]
+
+lst[-2]     # 5
+lst[-2:]    # [5,6]
+lst[:-2]    # [0, 1, 2, 3, 4]
+
+#
+lst[::-1]   # [6, 5, 4, 3, 2, 1, 0]
+lst[2::-2]  # [2, 0]
+lst[:2:-1]  # [6, 5, 4, 3]
+</code></pre>
+
+<h2>In  operator</h2>
+<pre><code class="language-python">
+'Hello' in 'Hello World'    #True
+'Hello' in 'Hello'          #True
+'HELLO' in 'Hello World'    #False
+'' in 'spam'                #True
+
+2 in [0,1,2,3,4,5,6]        #True
+</code></pre>
+
+<h2>Try Except</h2>
+<pre><code class="language-python">
+def divide(x, y):
+    try:
+        result = x / y
+    except ZeroDivisionError:
+        print("division by zero!")
+    except TypeError as e:
+        print(e) 
+    else:
+        print("result is", result)
+    finally:
+        print("executing finally clause")
+
+divide("a", 2) 
+# outputs:
+# unsupported operand type(s) for /: 'str' and 'int'
+# executing finally clause
+
+divide(1, 0) 
+# outputs:
+# division by zero!
+# executing finally clause
+
+divide(1, 2) 
+# outputs:
+# result is 0.5
+# executing finally clause
+</code></pre>
+
+        </div>
+    </div>
+<!---------------------------------------------------------------------------------------------->
+<!-- PYTHON Page 2 -->
+<!---------------------------------------------------------------------------------------------->
+
+    <div class="page landscape" layout="landscape">
+        <div class="page_content">
+            <img class="logo" src="./images/Python-logo.svg"/>
+
+<h2>Classes</h2>
+<pre><code class="language-python">
+class Dog:
+    kind = 'canine'  # class variable shared by all instances
+    def __init__(self, name):
+        self.name = name   # instance variable unique to each instance
+
+d = Dog('Fido')
+
+class MyClass:
+    def method(self):
+        return 'instance method called', self
+
+    #classmethods will take the class as first argument
+    @classmethod
+    def classmethod(cls):
+        return 'class method called', cls
+
+    @staticmethod
+    def staticmethod():
+        return 'static method called'
+
+MyClass.classmethod()
+MyClass.staticmethod()
+     
+# inheritance
+class Animal(object):
+  def __init__(self, animal_type):
+    print('Animal Type:', animal_type)
+    
+class Mammal(Animal):
+    def __init__(self):
+    # call superclass
+    super().__init__('Mammal')
+
+dog = Mammal()  # output: "Animal Type: Mammal"
+
+# multiple Inheritance
+class Base1():
+    pass
+
+class Base2():
+    pass
+
+class Base3(Base2):
+    pass
+
+class DerivedClassName(Base1, Base3):
+    pass
+
+#search for attributes goes from Parent to child, from left to right
+DerivedClassName.__mro__
+# output:
+# &lt;class '__main__.DerivedClassName'&gt;
+# &lt;class '__main__.Base1'&gt; 
+# &lt;class '__main__.Base3'&gt;
+# &lt;class '__main__.Base2'&gt;
+# &lt;class 'object'&gt;
+</code></pre>
+
+<h2>Magic methods</h2>
+<pre><code class="language-python">
+#iterators
+class Reverse:
+    """Iterator for looping over a sequence backwards."""
+    def __init__(self, data):
+        self.data = data
+        self.index = len(data)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.index == 0:
+            raise StopIteration
+        self.index = self.index - 1
+        return self.data[self.index]
+
+rev = Reverse('spam')
+for char in rev:
+    print(char)   
+# Outputs:
+# m
+# a
+# p
+# s
+
+#__new__ is called before __init__
+class Employee:
+    def __new__(cls):
+        print ("__new__ magic method is called")
+        inst = object.__new__(cls)
+                return inst
+    def __init__(self):
+        print ("__init__ magic method is called")
+        self.name='Satya'
+
+emp = Employee()
+# outputs:
+# __new__ magic method is called
+# __init__ magic method is called 
+
+class MyNum()
+    def __init__(self, val):
+        self.val = val
+
+    def __add__(self, other.val):
+        return self.val + other.val
+
+    def __sub__(self, other.val):
+        return self.val - other.val
+
+    def __mul__(self, other.val):
+        return self.val * other.val
+
+    def __gt__(self, other.val):
+        return self.val &gt; other.val
+
+    def __lt__(self, other.val):
+        return self.val &lt; other.val
+
+a = MyNum(1)
+b = MyNum(2)
+res1 = a + b # calls __add__(a, b)
+res2 = a - b # calls __sub__(a, b)
+res3 = a * b # calls __mul__(a, b)
+res4 = a &gt; b # calls __gt__(a, b)
+res4 = a &lt; b # calls __lt__(a, b)
+</code></pre>
+
+<h2>Build in functions</h2>
+<pre><code class="language-python">
+#absolute value of number
+abs(-2.23) # 2.23
+
+all([True, True])   # True
+all([True, False])  # False
+all([False, False]) # False
+
+any([True, True])   # True
+any([True, False])  # True
+any([False, False]) # False
+
+bin(3)              # '0b11'
+bin(-10)            # '-0b1010'
+
+bool(1)             # True
+bool(0)             # False
+
+callable(lambda a, b: a + b)    # True
+callable("test")                # False
+
+#unicode char to int
+chr(97)             # "a"
+ord("a")            # 97
+
+#complex numbers
+complex(1,2)        # 1+2j     
+
+setattr(x, 'foobar', 123)       # x.foobar = 123
+getattr(x, 'foobar')            # 123
+hasattr(x, 'foobar')            # True
+delattr(x, 'foobar')            # del x.foobar
+
+dict()              # {}
+
+# (a // b, a % b)
+divmod(5, 2)        # (2, 1)
+
+e = enumerate(['Spring', 'Summer'])
+next(e)             # (0, 'Spring')
+next(e)             # (1, 'Summer')
+
+#filter
+for i in filter(lambda x: x%2==0, [1,2,3,4,5,6]):
+    print i
+# output:
+# 2
+# 4
+# 6
+
+#string to number conversion
+float("1.2")        # 1.2
+int("12")           # 12
+
+hash("str")         # -780296214014971972
+
+hex(255)            # '0xff'
+input('--&gt;')       # userprompt in terminal
+
+class Parent:
+    pass
+
+class Child(Parent):
+    pass
+
+C = Child()
+
+type(C)                # &lt;class '__main__.Child'&gt;
+
+isinstance(C, Parent)  #True
+isinstance(C, Child)   #True
+
+issubclass(Child, Parent) #True
+issubclass(Parent, Child) #False
+
+e = iter(['Spring', 'Summer'])
+next(e) # Spring
+next(e) # Summer
+
+len([1,2,3])    # 3
+
+list(iter(['Spring', 'Summer'])) 
+# ['Spring', 'Summer']
+
+iter = map(lambda x:x*2, [1,2,3])
+for i in iter:
+    print(i)
+#output:
+# 2
+# 4
+# 6
+
+max(1,2,3,4)    # 4
+max([1,2,3,4])  # 4
+min(1,2,3,4)    # 1
+min([1,2,3,4])  # 1
+
+oct(8)          # '0o10'
+oct(-56)        # '-0o70'
+
+pow(2,3)        # 8
+
+round(2.4)      # 2
+
+set([1,1,2,3,3])    # {1,2,3}
+
+sorted([2,4,3,1],key=lambda x:x, reverse=False)
+# [1, 2, 3, 4]
+
+sum([1,2,3,4,5]) # 15
+
+tuple([1,2,3])  # (1, 2, 3)
+
+
+for item in zip([1, 2, 3], ['a', 'b', 'c']):
+    print(item)
+#output:
+# (1, "a")
+# (2, "b")
+# (3, "c")
+</code></pre>
+        </div>
+    </div>
+<!---------------------------------------------------------------------------------------------->
+<!-- PYTHON Page 3 -->
+<!---------------------------------------------------------------------------------------------->
+
+    <div class="page landscape" layout="landscape">
+        <div class="page_content">
+            <img class="logo" src="./images/Python-logo.svg"/>
+
+<h2>Strings</h2>
+<h3>String constants</h3>
+<pre><code class="language-python">
+string.ascii_lowercase
+# 'abcdefghijklmnopqrstuvwxyz'
+
+string.ascii_uppercase
+# 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+string.ascii_letters
+# 'abcdefghijklmnopqrstuvwxyz'
+# 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+string.digits
+# '0123456789'
+
+string.hexdigits
+# '0123456789abcdefABCDEF'
+
+string.octdigits
+# '01234567'   
+
+string.punctuation
+# '!"#$%&'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~'
+
+string.whitespace
+# ' ' '\t' '\v' '\n' '\r' '\f2' 
+
+string.printable
+# string.ascii_letters + 
+# string.digits +
+# string.punctuation +
+# string.whitespace
+</code></pre>
+
+<h3>String formatting</h3>
+<pre><code class="language-python">
+name = "Eric"
+"Hello, %s." % name
+# Hello, Eric.
+
+name = "Eric"
+age = 74
+"Hello, %s. You are %s." % (name, age)
+# 'Hello Eric. You are 74.'
+
+"Hello, {}. You are {}.".format(name, age)
+# 'Hello, Eric. You are 74.'
+
+"Hello, {1}. You are {0}.".format(age, name)
+# 'Hello, Eric. You are 74.'
+
+person = {'name': 'Eric', 'age': 74}
+"Hello, {name}. You are {age}.".format(name=person['name'], age=person['age'])
+# 'Hello, Eric. You are 74.'
+
+name = "Eric"
+age = 74
+f"Hello, {name}. You are {age}."
+# 'Hello, Eric. You are 74.'
+
+f"{2 * 37}"
+# '74'
+
+def to_lowercase(input):
+    return input.lower()
+
+name = "Eric Idle"
+f"{to_lowercase(name)} is funny."
+# 'eric idle is funny.'
+
+name = "Eric"
+profession = "comedian"
+affiliation = "Monty Python"
+message = (
+    f"Hi {name}. "
+    f"You are a {profession}. "
+    f"You were in {affiliation}."
+)
+message
+# 'Hi Eric. You are a comedian. 
+# You were in Monty Python.'
+</code></pre>
+<h3>Itertools</h3>
+<h3>Infinite iterators</h3>
+<pre><code class="language-python">
+import itertools
+
+itertools.count(10, 2)
+# 10, 12, 14, 16, ...
+
+itertools.cycle([1,2,3])
+# 1, 2, 3, 1, 2, 3, 1, ...
+
+itertools.repeat("A", 3)
+# "A", "A" ,"A"
+</code></pre>
+
+<h3>Terminating iterators</h3>
+<pre><code class="language-python"> 
+itertools.accumulate([1,2,3,4,5])
+# 1, 3, 6, 10, 15
+
+itertools.chain('ABC', 'DEF')
+# A, B, C, D, E, F
+
+itertools.chain.from_iterable(['ABC', 'DEF'])
+# A, B, C, D, E, F
+
+itertools.compress('ABCDEF', 
+            [True,False,True,False,True,True])
+# A, C, E, F
+
+itertools.dropwhile(lambda x: x&lt;5, [1,4,6,4,1])
+#6, 4, 1
+
+itertools.filterfalse(lambda x: x%2, range(10))
+# 0, 2, 4, 6, 8
+
+#islice(seq, start, stop, step)
+list(itertools.islice('ABCDEFG', 2, 6, 2)) 
+# C, E
+
+itertools.pairwise('ABCDEFG')
+# AB, BC, CD, DE, EF, FG
+
+itertools.starmap(pow, [(2,5), (3,2), (10,3)])
+# 2^5, 3^2, 10^3
+# 32, 9, 1000
+
+itertools.takewhile(lambda x: x&lt;5, [1,4,6,4,1])
+# 1, 4
+
+itertools.zip_longest('ABCD', 'xy', fillvalue='-')
+# Ax, By, C-, D-
+</code></pre>
+
+<h3>Combinatoric iterators:</h3>
+<pre><code class="language-python"> 
+itertools.product('ABC', 'XYZ')
+# ('A', 'X'), ('A', 'Y'), ('A', 'Z'), ('B', 'X'), 
+# ('B', 'Y'), ('B', 'Z'), ('C', 'X'), ('C', 'Y'), 
+# ('C', 'Z')
+
+itertools.permutation('ABC')
+# ('A', 'B', 'C'), ('A', 'C', 'B'), 
+# ('B', 'A', 'C'), ('B', 'C', 'A'),
+# ('C', 'A', 'B'), ('C', 'B', 'A')
+
+itertools.combinations([1,2,3,4], 2)
+#(1, 2), (1, 3), (1, 4), (2, 3), (2, 4), (3, 4)
+</code></pre>
+
+<h2>DataStructures</h2>
+<h3>List</h3>
+<pre><code class="language-python"> 
+l = [1,2,3]
+
+l.append(4)
+l # [1,2,3,4]
+
+l.extend([5,6])
+l # [1, 2, 3, 4, 5, 6]
+
+l.insert(0, 0)
+l.insert(3, "a")
+l # [0, 1, 2, 'a', 3, 4, 5, 6]
+
+l.remove("a")
+l # [0, 1, 2, 3, 4, 5, 6]
+
+l.pop(6) # 6
+l # [0, 1, 2, 3, 4, 5]
+
+l.index(2) # 2
+l.count(3) # 1
+l.count(8) # 0
+
+l.sort(reverse=True) 
+l   # [5, 4, 3, 2, 1, 0]
+l.sort()            
+l   # [0, 1, 2, 3, 4, 5]
+
+l.reverse()
+l   # [5, 4, 3, 2, 1, 0]
+
+l.copy() # [5, 4, 3, 2, 1, 0]
+
+del l[0]
+l # [4, 3, 2, 1, 0]
+
+del l[0:2]
+l # [2, 1, 0]
+
+# Looping
+for v in l:
+    print(l)
+# outputs:
+# 2
+# 1
+# 0
+
+for i, v in enumerate(i):
+    print(i, v)
+# outputs:
+# (0,2)
+# (1,1)
+# (2,0)  
+</code></pre>
+
+<h3>Deque</h3>
+<pre><code class="language-python"> 
+from collections import deque
+
+queue = deque(["A", "B", "C"])
+queue.append("D")
+queue.append("E")
+
+queue.popleft() # "A"
+queue.popleft() # "B"
+
+queue.pop() # "E"
+queue.pop() # "D"
+
+queue.index("C") # 0
+queue.extendleft([A,B])
+queue.popleft() # B
+queue.popleft() # A
+</code></pre>
+
+<h3>Dictionary</h3>
+<pre><code class="language-python"> 
+tel = {'jack': 4098, 'sape': 4139}
+tel['guido'] = 4127
+tel #{'jack': 4098, 'sape': 4139, 'guido': 4127}
+
+tel['jack'] #4098
+del tel['sape'] 
+tel # {'jack': 4098, 'guido': 4127}
+
+list(tel) # ['jack', 'guido']
+
+'guido' in tel # True
+'sape' in tel # False
+
+# Looping
+for k, v in tel.items():
+        print(k, v)
+# outputs:
+# ('jack' , 4098)
+# ('guido', 4127)
+</code></pre>
+
+<h3>Tuple</h3>
+<pre><code class="language-python"> 
+t = 12345, 54321, 'hello!'
+t[0] # 12345
+u = t, (1, 2, 3, 4, 5)
+u # ((12345, 54321, 'hello!'), (1, 2, 3, 4, 5))
+
+#Tuples are immutable
+t[0] = 88888 # TypeError
+</code></pre>
+
+<h3>Set</h3>
+<pre><code class="language-python"> 
+basket = {'A', 'A', 'B', 'B', 'C', 'D'}
+
+# Order is not preserved
+basket # {'B', 'C', 'A', 'D'}
+
+'A' in basket # True
+'E' in basket # False
+</code></pre>
+         </div>
+    </div>
+</body>
+
+</html>
